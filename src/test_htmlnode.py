@@ -6,8 +6,8 @@ from htmlnode import HTMLNode
 class TestHTMLNode(unittest.TestCase):
     def test_props_to_html1(self):
         node = HTMLNode("a", "http://www.mspaintadventures.com/sweetbroandhellajeff/", None, {"href": "http://www.mspaintadventures.com", "target": "Andrew Hussie"})
-        node2 = HTMLNode("a", "http://www.mspaintadventures.com/sweetbroandhellajeff/", None, {"href": None, "target": None})
-        self.assertNotEqual(node, node2)
+        expected_props_to_html = ' href="http://www.mspaintadventures.com" target="Andrew Hussie"'
+        self.assertEqual(node.props_to_html(), expected_props_to_html)
     def test_repr(self):
         node = HTMLNode("a", "http://www.mspaintadventures.com/sweetbroandhellajeff/", None, {"href": "http://www.mspaintadventures.com", "target": "Andrew Hussie"})
         expected_repr = "HTMLNode(a, http://www.mspaintadventures.com/sweetbroandhellajeff/, None, {'href': 'http://www.mspaintadventures.com', 'target': 'Andrew Hussie'})"
