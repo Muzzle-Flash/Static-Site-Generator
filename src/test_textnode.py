@@ -20,6 +20,12 @@ class TestTextNode(unittest.TestCase):
         node = TextNode("You gotta flip it turnways!", TextType.LINK, "https://www.homestuck.com/story/1349")
         node2 = TextNode("You gotta flip it turnways!", TextType.LINK, "https://www.homestuck.com/sweet-bro-and-hella-jeff/10")
         self.assertNotEqual(node, node2)
+    def test_nonstr_text(self):
+        node = TextNode(1650, TextType.ITALIC, None)
+        print(node)
+        expected_node = TextNode(1650, TextType.ITALIC, None)
+        print(expected_node)
+        self.assertEqual(node, expected_node)
 
 
 if __name__ == "__main__":
