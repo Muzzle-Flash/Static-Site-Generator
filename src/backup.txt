@@ -1,0 +1,67 @@
+from textnode import TextType, TextNode
+
+def split_nodes_delimiter(old_nodes, delimiter, text_type):
+    def process_text(text):
+        def find_next_valid_delim(start_pos):
+            while True:
+                first_pos = text.find(delimiter, start_pos)
+                if first_pos == -1:
+                    return -1, -1 #no more delimiters found
+                second_pos = text.find(delimiter, first_pos+1)
+                if second_pos == -1:
+                    return -1, -1 #no closing delimiter
+                content = text[first_pos+len(delimiter):second_pos]
+                if content.strip() != '':
+                    return first_pos, second_pos
+                start_pos = second_pos + len(delimiter)
+
+
+
+        print(f"processing: {text} as {text_type}")
+        first_pos = text.find(delimiter)
+        if first_pos == -1:
+            return [TextNode(text, TextType.NORMAL)] if text else []
+        second_pos = text.find(delimiter, first_pos+1)
+        result = []
+        
+        if text[first_pos + len(delimiter):second_pos].strip() == '':
+            print(f"Found empty delimiter pair {text[first_pos:second_pos+len(delimiter)]} at positions {first_pos}:{second_pos}")
+            print(f"Content between delimiters: '{text[first_pos + len(delimiter):second_pos]}'")
+            next_pos = text.find(delimiter, second_pos+1)
+            print(f"Looking for next delimiter after position {second_pos}")
+            print(f"Next delimiter {text[next_pos:next_pos+len(delimiter)]} found at: {next_pos}")
+            if next_pos == -1 or not text[next_pos+len(delimiter):]:
+                print(f"yReturning nodes: {result}\n")
+                return [TextNode(text, TextType.NORMAL)] if text else []
+            before_next = text[:next_pos]
+            if before_next:
+                result.append(TextNode(before_next, TextType.NORMAL))
+            remaining_text = text[next_pos:]
+            result.extend(process_text(remaining_text))
+            print(f"xReturning nodes: {result}\n")
+            return result 
+
+        if second_pos == -1:
+            print(f"Failed to find closing delimiter in: '{text}'")
+            raise ValueError("Closing delimiter not found")
+        
+        if first_pos > 0:
+            result.append(TextNode(text[:first_pos], TextType.NORMAL))
+        result.append(TextNode(text[first_pos + len(delimiter):second_pos], text_type))
+        remaining_text = text[second_pos + len(delimiter):]
+        result.extend(process_text(remaining_text))
+        return result
+    
+    new_nodes = []
+    for node in old_nodes:
+        if delimiter == '':
+            raise ValueError("Delimiter cannot be empty")
+        if not delimiter:
+            raise ValueError("No Delimiter provided")
+        if node.text_type != TextType.NORMAL:
+            new_nodes.append(node)
+            continue
+        new_nodes.extend(process_text(node.text))
+    
+    print(f"Returning final nodes: {new_nodes}\n")
+    return new_nodes

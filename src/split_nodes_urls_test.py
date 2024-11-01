@@ -31,25 +31,19 @@ class TestSplitNodesUrls(unittest.TestCase):
         expected = []
         self.assertEqual(split_nodes_image([]), expected)
 
-    def test_empty_text_image(self):
-        node = TextNode("", TextType.NORMAL)
-        with self.assertRaises(ValueError) as context:
-            split_nodes_image([node])
-        self.assertEqual(str(context.exception), "TextNode Text cannot be empty")
-
-    def test_null_text_image(self):
-        node = TextNode(None, TextType.NORMAL)
-        expected = []
-        self.assertEqual(split_nodes_image([node]), expected)
-
     def test_abnormal_type_image(self):
-        node = TextNode("This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif)", TextType.IMAGE)
-        expected = [TextNode("This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif)", TextType.IMAGE)]
+        node = TextNode("This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif)", TextType.LINK)
+        expected = [node]
         self.assertEqual(split_nodes_image([node]), expected)
 
     def test_empty_url_image(self):
         node = TextNode("This is text with a ![rick roll]", TextType.NORMAL)
         expected = [TextNode("This is text with a ![rick roll]", TextType.NORMAL)]
+        self.assertEqual(split_nodes_image([node]), expected)
+
+    def test_empty_alt_image(self):
+        node = TextNode("This is text with a (https://i.imgur.com/aKaOqIh.gif)", TextType.NORMAL)
+        expected = [TextNode("This is text with a (https://i.imgur.com/aKaOqIh.gif)", TextType.NORMAL)]
         self.assertEqual(split_nodes_image([node]), expected)
 
 #
@@ -81,25 +75,19 @@ class TestSplitNodesUrls(unittest.TestCase):
         expected = []
         self.assertEqual(split_nodes_link([]), expected)
 
-    def test_empty_text_link(self):
-        node = TextNode("", TextType.NORMAL)
-        with self.assertRaises(ValueError) as context:
-            split_nodes_link([node])
-        self.assertEqual(str(context.exception), "TextNode Text cannot be empty")
-
-    def test_null_text_link(self):
-        node = TextNode(None, TextType.NORMAL)
-        expected = []
-        self.assertEqual(split_nodes_link([node]), expected)
-
     def test_abnormal_type_link(self):
-        node = TextNode("This is text with a link [to boot dev](https://www.boot.dev)", TextType.LINK)
-        expected = [TextNode("This is text with a link [to boot dev](https://www.boot.dev)", TextType.LINK)]
+        node = TextNode("This is text with a link [to boot dev](https://www.boot.dev)", TextType.IMAGE)
+        expected = [node]
         self.assertEqual(split_nodes_link([node]), expected)
 
     def test_empty_url_link(self):
-        node = TextNode("This is text with a ![rick roll]", TextType.NORMAL)
-        expected = [TextNode("This is text with a ![rick roll]", TextType.NORMAL)]
+        node = TextNode("This is text with a link (https://www.boot.dev)", TextType.NORMAL)
+        expected = [TextNode("This is text with a link (https://www.boot.dev)", TextType.NORMAL)]
+        self.assertEqual(split_nodes_link([node]), expected)
+
+    def test_empty_anchor_link(self):
+        node = TextNode("This is text with a link [to boot dev]", TextType.NORMAL)
+        expected = [TextNode("This is text with a link [to boot dev]", TextType.NORMAL)]
         self.assertEqual(split_nodes_link([node]), expected)
         
             

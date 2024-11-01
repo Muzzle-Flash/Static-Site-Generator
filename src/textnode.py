@@ -11,7 +11,11 @@ class TextType(Enum):
 class TextNode:
     def __init__(self, text, text_type, url = None):
         self.text = text
+        if not self.text:
+            raise ValueError("TextNode must have Text")
         self.text_type = text_type
+        if not self.text_type:
+            raise ValueError("TextNode must have a TextType")
         self.url = url
     def __eq__(self, other):
         return (
@@ -21,5 +25,7 @@ class TextNode:
             self.url == other.url
         )
     def __repr__(self):
+        if self.url is None:
+            return f'TextNode({self.text}, {self.text_type})'
         return f'TextNode({self.text}, {self.text_type}, {self.url})'
     

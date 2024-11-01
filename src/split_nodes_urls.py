@@ -1,5 +1,5 @@
 from textnode import TextType, TextNode
-from extractfrommarkdown import extract_markdown_links, extract_markdown_images
+from extract_from_markdown import extract_markdown_links, extract_markdown_images
 
 def process_text(text, extractor, text_type):
     result = []

@@ -3,8 +3,11 @@ from textnode import TextType, TextNode
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     def process_text(text):
         print(f"processing {text} as type {text_type}\n")
+        is_balanced_delimiters = lambda text, delimiter: text.count(delimiter) % 2 == 0
         is_valid_delimiter_pair = lambda text, pos, delimiter: not (text[pos:pos + len(delimiter) * 2] == delimiter * 2 or text[max(0, pos - len(delimiter)):pos + len(delimiter)] == delimiter * 2)
-
+        
+        if not is_balanced_delimiters(text, delimiter):
+            return [TextNode(text, TextType.NORMAL)]
 
         def find_next_valid_delim(start_pos):
             print(f"Searching from position {start_pos}")
@@ -20,10 +23,11 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                 print(f"Failed to find closing delimiter in: '{text}'\n")
                 raise ValueError("Closing delimiter not found")
             content = text[first_pos+len(delimiter):second_pos]
-            if content.strip() != '':
+            is_empty_delimiter = lambda pos: text[pos:pos+len(delimiter)*2] == delimiter *2
+            if not is_empty_delimiter(first_pos):
                 print(f"found valid delimiter pair {text[first_pos:second_pos+len(delimiter)]} at: {first_pos}:{second_pos}\n")
                 return first_pos, second_pos
-            if content.strip() == '':
+            if is_empty_delimiter(first_pos):
                 print(f"found empty delimiter pair {text[first_pos:second_pos+len(delimiter)]} at: {first_pos}:{second_pos}\n")
                 return find_next_valid_delim(second_pos + len(delimiter))
         

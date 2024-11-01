@@ -7,20 +7,14 @@ class TestParentNode(unittest.TestCase):
     def test_no_terminal_del_in_node(self):
         node = TextNode("**the game plays us for fools", TextType.NORMAL)
         with self.assertRaises(ValueError) as context:
-            split_nodes_delimiter([node], '**', TextType.BOLD)
+            print(split_nodes_delimiter([node], '**', TextType.BOLD))
         self.assertEqual(str(context.exception), "Closing delimiter not found")
 
     def test_empty_delimiter_in_node(self):
-        node = TextNode("**test", TextType.NORMAL)
+        node = TextNode("**test**", TextType.NORMAL)
         with self.assertRaises(ValueError) as context:
             split_nodes_delimiter([node], '', TextType.BOLD)
         self.assertEqual(str(context.exception), "Delimiter cannot be empty")
-
-    def test_empty_text_in_node(self):
-        node = TextNode('', TextType.NORMAL)
-        with self.assertRaises(ValueError) as context:
-            split_nodes_delimiter([node], '*', TextType.ITALIC)
-        self.assertEqual(str(context.exception), "TextNode Text cannot be empty")
 
     def test_empty_list(self):
         expected_node = []
@@ -53,7 +47,7 @@ class TestParentNode(unittest.TestCase):
     def test_odd_delimiters(self):
         node = TextNode("This is `some text with a |` character` more text", TextType.NORMAL)
         with self.assertRaises(ValueError) as context:
-            split_nodes_delimiter([node], '`', TextType.CODE)
+            print(split_nodes_delimiter([node], '`', TextType.CODE))
         self.assertEqual(str(context.exception), "Closing delimiter not found")
     
     def test_mismatched_delimiter(self):
@@ -63,13 +57,14 @@ class TestParentNode(unittest.TestCase):
     
     def test_missing_delimiter(self):
         node = TextNode("*Undead force of terror!*", TextType.NORMAL)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError) as context:
             split_nodes_delimiter([node], None, TextType.ITALIC)
+        self.assertEqual(str(context.exception), "No Delimiter provided")
 
-    def test_missing_type(self):
-        node = TextNode("*Undead force of terror!*", TextType.NORMAL)
-        expected = [TextNode("Undead force of terror!", None)]
-        self.assertNotEqual(split_nodes_delimiter([node], "*", TextType.ITALIC), expected)
+    def test_no_delimiters_in_text(self):
+        node = TextNode("Undead force of terror!", TextType.NORMAL)
+        expected = [TextNode("Undead force of terror!", TextType.NORMAL)]
+        self.assertEqual(split_nodes_delimiter([node], "*", TextType.ITALIC), expected)
             
 
         
