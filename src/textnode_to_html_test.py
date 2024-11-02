@@ -1,7 +1,7 @@
 import unittest
 from textnode import TextNode, TextType
 from leafnode import LeafNode
-from text_to_html import text_node_to_html_node
+from textnode_to_html import text_node_to_html_node
 
 class TestTextToHTML(unittest.TestCase):
 
@@ -12,7 +12,7 @@ class TestTextToHTML(unittest.TestCase):
         self.assertEqual(str(context.exception), "Invalid type")
 
     def test_no_url(self):
-        node = TextNode("Everything at once", "link", None)
+        node = TextNode("Everything at once", TextType.LINK, None)
         expected_result = "HTMLNode(a, Everything at once, None, {'href': None})"
         self.assertEqual(repr(text_node_to_html_node(node)), expected_result)
         

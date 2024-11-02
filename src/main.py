@@ -1,22 +1,14 @@
-from textnode import *
-from text_to_html import text_node_to_html_node
-from split_nodes_delimiter import split_nodes_delimiter
-from text_to_textnodes import text_to_textnodes
-from markdown_to_blocks import markdown_to_blocks
+from move_to_destination import move_to_destination
+from generate_page import generate_page
+from generate_pages_recursive import generate_pages_recursive
+import os
+
 def main():
-    test_md = """
-        # This is a heading
-
-        This is a paragraph of text. It has some **bold** and *italic* words inside of it.
-
-        * This is the first list item in a list block
-        * This is a list item
-        * This is another list item
-        """
-
-    result = markdown_to_blocks(test_md)
-    for block in result:
-        print(f"block: '{block}'")
+    move_to_destination('static', 'public')
+    generate_pages_recursive('content', 'template.html', 'public')
+    #generate_page('content/index.md', 'template.html', 'public/index.html')
+    
+    
 
 
 if __name__=="__main__":
